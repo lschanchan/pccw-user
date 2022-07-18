@@ -1,0 +1,4 @@
+from openjdk:8-jdk-alpine
+volume /tmp
+add demo-0.0.1-SNAPSHOT-exec.jar app.jar
+entrypoint ["java","-jar","/app.jar"]

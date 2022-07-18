@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pccw.user.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.pccw.user.dao.TUser" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="deleted" property="deleted" jdbcType="TINYINT" />
+  </resultMap>
+  <select id="findAll" resultMap="BaseResultMap"  >
+        select * from t_user where deleted = 0 order by id desc
+  </select>
+  <select id="selectById" resultMap="BaseResultMap"  parameterType="java.lang.Long">
+        select * from t_user where id = #{id,jdbcType=BIGINT} and deleted = 0
+  </select>
+  <insert id="insert" parameterType="com.pccw.user.dao.TUser" useGeneratedKeys="true" keyProperty="tUser.id">
+
+    insert into t_user (user_name, email, age, created_time, update_time, deleted)
+    values (#{tUser.userName,jdbcType=VARCHAR},#{tUser.email,jdbcType=VARCHAR}, #{tUser.age,jdbcType=INTEGER}, #{tUser.createdTime,jdbcType=TIMESTAMP}, #{tUser.updateTime,jdbcType=TIMESTAMP}, #{tUser.deleted,jdbcType=TINYINT})
+  </insert>
+  <update id="updateById" parameterType="com.pccw.user.dao.TUser" >
+    update t_user
+    <set >
+      <if test="tUser.userName != null" >
+        user_name = #{tUser.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="tUser.email != null" >
+        email = #{tUser.email,jdbcType=VARCHAR},
+      </if>
+      <if test="tUser.age != null" >
+        age = #{tUser.age,jdbcType=INTEGER},
+      </if>
+      <if test="tUser.updateTime != null" >
+        update_time = #{tUser.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tUser.deleted != null" >
+        deleted = #{tUser.deleted,jdbcType=TINYINT}
+      </if>
+    </set>
+    where id = #{tUser.id,jdbcType=BIGINT}
+  </update>
+  <select id="existsByUserNameOrEmail" resultMap="BaseResultMap" >
+        select * from t_user where user_name = #{userName,jdbcType=VARCHAR} and email = #{email,jdbcType=VARCHAR}
+  </select>
+</mapper>
